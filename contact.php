@@ -1,87 +1,86 @@
-<?php
-session_start();
-//error_reporting(0);
+<?php error_reporting(0);
 include('includes/config.php');
-if(strlen($_SESSION['alogin'])==0)
-	{	
-header('location:index.php');
-}
-else{
-if(isset($_POST['update']))
+
+if(isset($_POST['submit']))
 {
-$wpaddress=$_POST['address'];	
-$wpcnumber=$_POST['contactno'];
-$ophrs=$_POST['openinghrs'];
-$email=$_POST['emailid'];
+$name=$_POST['name'];
+$email=$_POST['email'];   
+$subject=$_POST['subject'];
+$message=$_POST['message'];
 
-$sql="update tblpages set detail=:wpaddress,openignHrs=:ophrs,phoneNumber=:wpcnumber,emailId=:email where type='contact'";
+$sql="INSERT INTO tblenquiry(FullName,EmailId,Subject,Description) VALUES(:name,:email,:subject,:message)";
 $query = $dbh->prepare($sql);
-$query->bindParam(':ophrs',$ophrs,PDO::PARAM_STR);
-$query->bindParam(':wpaddress',$wpaddress,PDO::PARAM_STR);
-$query->bindParam(':wpcnumber',$wpcnumber,PDO::PARAM_STR);
+$query->bindParam(':name',$name,PDO::PARAM_STR);
 $query->bindParam(':email',$email,PDO::PARAM_STR);
+$query->bindParam(':subject',$subject,PDO::PARAM_STR);
+$query->bindParam(':message',$message,PDO::PARAM_STR);
 $query->execute();
-
- echo "<script>alert('Details updates successfully');</script>";
+$lastInsertId = $dbh->lastInsertId();
+if($lastInsertId)
+{
+ echo "<script>alert('Query sent successfully');</script>";
  echo "<script>window.location.href ='contact.php'</script>";
+}
+else 
+{
+ echo "<script>alert('Something went wrong. Please try again.');</script>";
+}
 
 }
 
-	?>
-<!DOCTYPE HTML>
-<html>
-<head>
-<title>CWMS | Contact Us info</title>
+    ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>CWMS | Contact Us</title>
+        <!-- Favicon -->
+        <link href="img/favicon.ico" rel="icon">
 
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<link href="css/bootstrap.min.css" rel='stylesheet' type='text/css' />
-<link href="css/style.css" rel='stylesheet' type='text/css' />
-<link rel="stylesheet" href="css/morris.css" type="text/css"/>
-<link href="css/font-awesome.css" rel="stylesheet"> 
-<script src="js/jquery-2.1.4.min.js"></script>
-<link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
-<link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="css/icon-font.min.css" type='text/css' />
-  <style>
-		.errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-		</style>
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+        
+        <!-- CSS Libraries -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
+        <link href="lib/animate/animate.min.css" rel="stylesheet">
+        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-</head> 
-<body>
-   <div class="page-container">
-   <!--/content-inner-->
-<div class="left-content">
-	   <div class="mother-grid-inner">
-              <!--header start here-->
-<?php include('includes/header.php');?>
-							
-				     <div class="clearfix"> </div>	
-				</div>
-<!--heder end here-->
-	<ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="dashboard.php">Home</a><i class="fa fa-angle-right"></i>Contact us information</li>
-            </ol>
-		<!--grid-->
- 	<div class="grid-form">
- 
-<!---->
-  <div class="grid-form1">
-  	       <h3>Update Contact Information</h3>
+        <!-- Template Stylesheet -->
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+
+    <body>
+<?php include_once('includes/header.php');?>
+
+        
+        
+        <!-- Page Header Start -->
+        <div class="page-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2>Contact Us</h2>
+                    </div>
+                    <div class="col-12">
+                        <a href="index.php">Home</a>
+                        <a href="contact.php">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page Header End -->
+        
+        
+        <!-- Contact Start -->
+        <div class="contact">
+            <div class="container">
+                <div class="section-header text-center">
+                    <p>Get In Touch</p>
+                    <h2>Contact for any query</h2>
+                </div>
+                <div class="row">
 <?php 
 $sql = "SELECT * from tblpages where type='contact'";
 $query = $dbh -> prepare($sql);
@@ -90,125 +89,101 @@ $results=$query->fetchAll(PDO::FETCH_OBJ);
 foreach($results as $result)
 {       
 ?>
-  	         <div class="tab-content">
-						<div class="tab-pane active" id="horizontal-form">
-							<form class="form-horizontal" name="washingpoint" method="post" enctype="multipart/form-data">
-
-<div class="form-group">
-									<label for="focusedinput" class="col-sm-2 control-label">Adress</label>
-									<div class="col-sm-8">
-										<textarea class="form-control" name="address" id="address" placeholder="Address" required rows="4"><?php   echo $result->detail; ?></textarea>
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label for="focusedinput" class="col-sm-2 control-label">Opening Hours</label>
-									<div class="col-sm-8">
-										<input type="text" class="form-control" name="openinghrs" id="openinghrs" placeholder="Opening Hour" value="<?php   echo $result->openignHrs; ?>" required>
-									</div>
-								</div>
-<div class="form-group">
-									<label for="focusedinput" class="col-sm-2 control-label">Email Id</label>
-									<div class="col-sm-8">
-										<input type="email" class="form-control" name="emailid" id="emailid" placeholder="Email Id" required value="<?php   echo $result->emailId; ?>">
-									</div>
-								</div>
 
 
-<div class="form-group">
-									<label for="focusedinput" class="col-sm-2 control-label">Contact Number</label>
-									<div class="col-sm-8">
-										<input type="text" class="form-control" name="contactno" id="contactno" placeholder="Contact Number" required value="<?php   echo $result->phoneNumber; ?>">
-									</div>
-								</div>
+                    <div class="col-md-4">
+                        <div class="contact-info">
+                            <h2>Quick Contact Info</h2>
+
+  <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                </div>
+                                <div class="contact-info-text">
+                                    <h3>Address</h3>
+                                    <p>+<?php   echo $result->detail; ?></p>
+                                </div>
+                            </div>
 
 
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="contact-info-text">
+                                    <h3>Opening Hour</h3>
+                                    <p><?php   echo $result->openignHrs; ?></p>
+                                </div>
+                            </div>
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="fa fa-phone-alt"></i>
+                                </div>
+                                <div class="contact-info-text">
+                                    <h3>Call Us</h3>
+                                    <p>+<?php   echo $result->phoneNumber; ?></p>
+                                </div>
+                            </div>
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="far fa-envelope"></i>
+                                </div>
+                                <div class="contact-info-text">
+                                    <h3>Email Us</h3>
+                                    <p><?php   echo $result->emailId; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                    <div class="col-md-7">
+                        <div class="contact-form">
+                            <div id="success"></div>
+                            <form name="sentMessage" id="contactForm" method="post">
+                                <div class="control-group">
+                                    <input type="text" class="form-control" id="name" placeholder="Your Name" required="required" name="name" /><br />
+                           
+                                </div>
+                                <div class="control-group">
+                                    <input type="email" class="form-control" id="email" placeholder="Your Email" name="email" required="required"  /> <br />
+                                
+                                </div>
+                                <div class="control-group">
+                                    <input type="text" class="form-control" id="subject" placeholder="Subject" required="required" name="subject" /> <br />
+                       
+                                </div>
+                                <div class="control-group">
+                                    <textarea class="form-control" id="message" placeholder="Message" required="required" name="message" ></textarea><br />
+                 
+                                </div>
+                                <div>
+                                    <button class="btn btn-custom" type="submit" id="sendMessageButton" name="submit">Send Message</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+           
+                </div>
+            </div>
+        </div>
+        <!-- Contact End -->
 
-	
 
+        <!-- Footer Start -->
+<?php include_once('includes/footer.php');?>
 
-														
-	
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/counterup/counterup.min.js"></script>
+        
+        <!-- Contact Javascript File -->
+   <!--  -->
 
-								<div class="row">
-			<div class="col-sm-8 col-sm-offset-2">
-				<button type="submit" name="update" class="btn-primary btn">Update</button>
-			</div>
-		</div>
-							
-					</div>
-					</form>
-
-     <?php }  ?>
-      
-
-      
-      <div class="panel-footer">
-		
-	 </div>
-    </form>
-  </div>
- 	</div>
- 	<!--//grid-->
-
-<!-- script-for sticky-nav -->
-		<script>
-		$(document).ready(function() {
-			 var navoffeset=$(".header-main").offset().top;
-			 $(window).scroll(function(){
-				var scrollpos=$(window).scrollTop(); 
-				if(scrollpos >=navoffeset){
-					$(".header-main").addClass("fixed");
-				}else{
-					$(".header-main").removeClass("fixed");
-				}
-			 });
-			 
-		});
-		</script>
-		<!-- /script-for sticky-nav -->
-<!--inner block start here-->
-<div class="inner-block">
-
-</div>
-<!--inner block end here-->
-<!--copy rights start here-->
-<?php include('includes/footer.php');?>
-<!--COPY rights end here-->
-</div>
-</div>
-  <!--//content-inner-->
-		<!--/sidebar-menu-->
-					<?php include('includes/sidebarmenu.php');?>
-							  <div class="clearfix"></div>		
-							</div>
-							<script>
-							var toggle = true;
-										
-							$(".sidebar-icon").click(function() {                
-							  if (toggle)
-							  {
-								$(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
-								$("#menu span").css({"position":"absolute"});
-							  }
-							  else
-							  {
-								$(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
-								setTimeout(function() {
-								  $("#menu span").css({"position":"relative"});
-								}, 400);
-							  }
-											
-											toggle = !toggle;
-										});
-							</script>
-<!--js -->
-<script src="js/jquery.nicescroll.js"></script>
-<script src="js/scripts.js"></script>
-<!-- Bootstrap Core JavaScript -->
-   <script src="js/bootstrap.min.js"></script>
-   <!-- /Bootstrap Core JavaScript -->	   
-
-</body>
+        <!-- Template Javascript -->
+        <script src="js/main.js"></script>
+    </body>
 </html>
-<?php } ?>

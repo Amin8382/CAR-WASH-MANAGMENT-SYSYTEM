@@ -1,13 +1,15 @@
-<?php //error_reporting(0);
+<?php error_reporting(0);
 include('includes/config.php');
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Car Wash management System | About Us Page</title>
-   
+        <title>CWMS | Car Wash Points</title>
+
+
+        <!-- Favicon -->
+        <link href="img/favicon.ico" rel="icon">
 
         <!-- Google Font -->
         <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> 
@@ -24,74 +26,66 @@ include('includes/config.php');
     </head>
 
     <body>
+        <!-- Top Bar Start -->
 <?php include_once('includes/header.php');?>
+        
+        
         <!-- Page Header Start -->
         <div class="page-header">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2>About Us</h2>
+                        <h2>Washing Points</h2>
                     </div>
                     <div class="col-12">
                         <a href="index.php">Home</a>
-                        <a href="about.php">About Us</a>
+                        <a href="location.php">Location</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Page Header End -->
         
-
-        <!-- About Start -->
-        <div class="about">
+        
+        <!-- Location Start -->
+        <div class="location">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="about-img">
-                            <img src="img/about.jpg" alt="Image">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12">
                         <div class="section-header text-left">
-                            <p>About Us</p>
-                            <h2>car washing and detailing</h2>
+                            <p>Washing Points</p>
+                            <h2>Car Washing & Care Points</h2>
                         </div>
-                        <div class="about-content">
-<?php 
-$sql = "SELECT type,detail from tblpages where type='aboutus'";
+                        <div class="row">
+                            <?php $sql = "SELECT * from tblwashingpoints";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 foreach($results as $result)
-{       
-?>
-
-                            <p>
-                            <?php   echo $result->detail; ?>
-                            </p>
-                        <?php } ?>
-                        <hr />
-                            <ul>
-                                <li><i class="far fa-check-circle"></i>Seats washing</li>
-                                <li><i class="far fa-check-circle"></i>Vacuum cleaning</li>
-                                <li><i class="far fa-check-circle"></i>Interior wet cleaning</li>
-                                <li><i class="far fa-check-circle"></i>Window wiping</li>
-                            </ul>
-                  
+{               ?>  
+                            <div class="col-md-6">
+                                <div class="location-item">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <div class="location-text">
+                                <h3><?php echo htmlentities($result->washingPointName);?></h3>
+                    <p><?php echo htmlentities($result->washingPointAddress);?></p>
+                    <p><strong>Call:</strong><?php echo htmlentities($result->contactNumber);?></p>
+                                    </div>
+                                </div>
+                            </div>
+<?php } ?>
+                      
                         </div>
                     </div>
+           
                 </div>
             </div>
         </div>
-        <!-- About End -->
+        <!-- Location End -->
         
         
-
-
-
-  
-
 <?php include_once('includes/footer.php');?>
+
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
